@@ -14,6 +14,11 @@ class Product extends Model
 
     public function supplier()
     {
-        return $this->belongsToMany(Supplier::class, 'product_id');
+        return $this->belongsToMany(Supplier::class, 'supplier_code');
+    }
+
+    public function category()
+    {
+        return $this->belongsToMany(Category::class, 'category_code');
     }
 }

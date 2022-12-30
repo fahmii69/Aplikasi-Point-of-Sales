@@ -12,10 +12,10 @@ class Supplier extends Model
     use HasFactory;
 
     // protected $guarded = [];
-    protected $fillable = ['name', 'default_markup'];
+    protected $fillable = ['supplier_name', 'supplier_address', 'supplier_phone', 'status'];
 
     public function product()
     {
-        return $this->belongsToMany(Product::class, 'product_id');
+        return $this->belongsToMany(Product::class, 'supplier_code');
     }
 }

@@ -4,23 +4,38 @@ namespace App\Http\Controllers\Master;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Master\Supplier\StoreSupplierRequest;
+use App\Http\Requests\Master\Supplier\UpdateSupplierRequest;
 use App\Models\Supplier;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
 use Yajra\DataTables\DataTables;
 
 class SupplierController extends Controller
 {
     /**
+     * Constructor
+     */
+    public function __construct(
+        protected string $title = "Supplier",
+        protected string $route = "supplier.",
+        protected string $routeView = "master_data.supplier.",
+    ) {
+    }
+
+    /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return View
      */
-    public function index()
+    public function index(): View
     {
-        return view('master_data.supplier.index');
+        return view($this->routeView . "index", [
+            'title'    => $this->title,
+        ]);
     }
 
     public function getSupplier(Request $request)
@@ -40,26 +55,37 @@ class SupplierController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return View
      */
-    public function create()
+    public function create(): View
     {
-        return view('master_data.supplier.create');
+        return view($this->routeView . "form", [
+            'title'    => "Add {$this->title}",
+            'supplier' => new Supplier(),
+            'action'   => route($this->route . 'create')
+        ]);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  StoreSupplierRequest $request
      * @return RedirectResponse
      */
     public function store(StoreSupplierRequest $request): RedirectResponse
     {
         DB::beginTransaction();
+
+        $character = "ABCDEVGHIJKLMNOPQRSTUVWXYZ";
+        $pin = mt_rand(0, 9999999) . $character[rand(0, strlen($character) - 1)];
+        $string = str_shuffle($pin);
+        $code = "SUP-" . $string;
+
         try {
             $supplier = new Supplier($request->safe(
-                ['name', 'default_markup']
+                ['supplier_name', 'supplier_address', 'supplier_phone']
             ));
+            $supplier->supplier_code = $code;
 
             $supplier->save();
 
@@ -77,8 +103,9 @@ class SupplierController extends Controller
             return redirect()->back()->with($notification)->withInput();
         }
         DB::commit();
-
-        return redirect()->route('supplier.index')->with($notification);
+        return redirect()
+            ->route($this->route . "index")
+            ->with($notification);
     }
 
     /**
@@ -95,34 +122,64 @@ class SupplierController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  Supplier $supplier
+     * @return View
      */
-    public function edit($id)
+    public function edit(Supplier $supplier): View
     {
-        //
+        return view($this->routeView . "form", [
+            'title'          => "Edit {$this->title}",
+            'supplier' => $supplier,
+            'action'   => route($this->route . 'edit', $supplier)
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  UpdateSupplierRequest $request
+     * @param  Supplier $supplier
+     * @return RedirectResponse
      */
-    public function update(Request $request, $id)
+    public function update(UpdateSupplierRequest $request, Supplier $supplier): RedirectResponse
     {
-        //
+        DB::beginTransaction();
+        try {
+            $supplier->fill($request->safe(
+                ['supplier_name', 'supplier_address', 'supplier_phone']
+            ));
+
+            $supplier->update();
+
+            $notification = array(
+                'message'    => 'Supplier data has been updated!',
+                'alert-type' => 'success'
+            );
+        } catch (Exception $e) {
+            DB::rollBack();
+            $notification = array(
+                'message'    => $e->getMessage(),
+                'alert-type' => 'error'
+            );
+
+            return redirect()->back()->with($notification)->withInput();
+        }
+        DB::commit();
+        return redirect()
+            ->route($this->route . "index")
+            ->with($notification);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete data.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Supplier $supplier
+     * @return JsonResponse
      */
-    public function destroy($id)
+    public function destroy(Supplier $supplier): JsonResponse
     {
-        //
+        Supplier::destroy($supplier->id);
+
+        return response()->json(['success' => true, 'message' => 'Supplier Data has been DELETED !']);
     }
 }

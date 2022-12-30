@@ -85,7 +85,7 @@
                 {{-- Master Data --}}
                 <li class="nav-header">Master Data</li>
                 <li class="nav-item">
-                    <a href="/" class="nav-link">
+                    <a href="{{ route('product.index') }}" class="nav-link">
                         <i class="nav-icon fa fa-tags"></i>
                         <p>Products</p>
                     </a>
@@ -98,7 +98,7 @@
                 </li>
 				<li class="nav-item">
                     <a href="{{ route('supplier.index') }}" class="nav-link">
-                        <i class="nav-icon fas fa-box"></i>
+                        <i class="nav-icon fas fa-truck"></i>
                         <p>Supplier</p>
                     </a>
                 </li>

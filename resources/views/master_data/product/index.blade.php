@@ -3,16 +3,18 @@
 <!-- Default box -->
 <div class="container-fluid">
     <div class="card shadow mb-4">
-        <x-create-button route="{{ route('supplier.create') }}" title=Supplier />
+        <x-create-button route="{{route('product.create')}}" title=Product />
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="supplier-dataTable" width="100%" cellspacing="0">
+                <table class="table table-bordered" id="product-dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                            <th>Supplier Code</th>
-                            <th>Supplier Name</th>
-                            <th>Supplier Address</th>
-                            <th>Supplier Phone</th>
+                            <th>Product Name</th>
+                            <th>Product Category</th>
+                            <th>Brand</th>
+                            <th>Supplier</th>
+                            {{-- <th>Inventory</th> --}}
+                            <th>Product Price</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -27,27 +29,33 @@
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     $(document).ready(function () {
-        var table = $('#supplier-dataTable').DataTable({
+        var table = $('#product-dataTable').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('supplier.list') }}",
+            ajax: "{{ route('product.list') }}",
             columns: [{
+                    data: 'product_name',
+                    name: 'product_name'
+                },
+                {
+                    data: 'category_code',
+                    name: 'category_code'
+                },
+                {
+                    data: 'brand_code',
+                    name: 'brand_code'
+                },
+                {
                     data: 'supplier_code',
-                    name: 'supplier_code',
-                    orderable: false,
-                    searchable: false,
+                    name: 'supplier_code'
                 },
+                // {
+                //     data: 'product_price',
+                //     name: 'product_price'
+                // },
                 {
-                    data: 'supplier_name',
-                    name: 'supplier_name',
-                },
-                {
-                    data: 'supplier_address',
-                    name: 'supplier_address',
-                },
-                {
-                    data: 'supplier_phone',
-                    name: 'supplier_phone',
+                    data: 'product_price',
+                    name: 'product_price'
                 },
                 {
                     data: 'action',
@@ -80,7 +88,7 @@
                 cancelButtonText: 'Cancel'
             }).then((result) => {
                 if (result.value) {
-                    let url = '{{ route('supplier.destroy', ':id') }}';
+                    let url = '{{ route('product.destroy', ':id') }}';
                         url = url.replace(':id', id);
 
                     $.ajax({

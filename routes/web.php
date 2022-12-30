@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Master\ProductController;
 use App\Http\Controllers\Master\SupplierController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,3 +21,6 @@ Route::get('/', function () {
 
 Route::get('/supplier/get', [SupplierController::class, 'getSupplier'])->name('supplier.list');
 Route::resource('supplier', SupplierController::class);
+
+Route::get('/product/get', [ProductController::class, 'getProduct'])->name('product.list');
+Route::resource('product', ProductController::class);

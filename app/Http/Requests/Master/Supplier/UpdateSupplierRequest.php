@@ -5,7 +5,7 @@ namespace App\Http\Requests\Master\Supplier;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class StoreSupplierRequest extends FormRequest
+class UpdateSupplierRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,7 +25,7 @@ class StoreSupplierRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'supplier_code'    => [Rule::unique('suppliers', 'supplier_code')],
+            'supplier_code'    => [Rule::unique('suppliers', 'supplier_code')->ignore($this->supplier)],
             'supplier_name'    => 'required', 'string',
             'supplier_address' => 'required',
             'supplier_phone'   => 'required',

@@ -17,19 +17,37 @@ class ProductSeeder extends Seeder
     {
         Product::insert([
             [
-                'name' => 'Bakso sus',
-                'supplier_id' => '1',
-                'retail_price' => '5000'
+                'product_name'    => 'Bakso Sus',
+                'product_price'   => '10000',
+                'supplier_code'   => 'SUP-0169P317',
+                'category_code'   => 'CAT-99789B75',
+                'type_product'    => '1',
+                'model_code'      => '1',
+                'brand_code'      => '1',
+                'levelAttribute'  => '1',
+                'detailAttribute' => '1',
             ],
             [
-                'name' => 'Cat Water',
-                'supplier_id' => '2',
-                'retail_price' => '6000'
+                'product_name'    => 'Gatsby',
+                'product_price'   => '5000',
+                'supplier_code'   => 'SUP-3612Z666',
+                'category_code'   => 'CAT-B6402729',
+                'type_product'    => '2',
+                'model_code'      => '2',
+                'brand_code'      => '2',
+                'levelAttribute'  => '2',
+                'detailAttribute' => '2',
             ],
             [
-                'name' => 'Gatsby',
-                'supplier_id' => '3',
-                'retail_price' => '4000'
+                'product_name'    => 'KukuBambang',
+                'product_price'   => '2500',
+                'supplier_code'   => 'SUP-98393D42',
+                'category_code'   => 'CAT-9888548E',
+                'type_product'    => '3',
+                'model_code'      => '3',
+                'brand_code'      => '3',
+                'levelAttribute'  => '3',
+                'detailAttribute' => '3',
             ],
         ]);
     }
