@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Products\Category;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Faker\Factory as Faker;
 
 class CategorySeeder extends Seeder
 {
@@ -15,27 +16,19 @@ class CategorySeeder extends Seeder
      */
     public function run()
     {
-        Category::insert([
-            [
-                'category_code' => 'CAT-9888548E',
-                'category_name' => 'Energy Drink',
-                'isModifier'    => 0,
-            ],
-            [
-                'category_code' => 'CAT-B6402729',
-                'category_name' => 'Soda',
-                'isModifier'    => 0,
-            ],
-            [
-                'category_code' => 'CAT-99789B75',
-                'category_name' => 'Food',
-                'isModifier'    => 1,
-            ],
-            [
-                'category_code' => 'CAT-86R8863',
-                'category_name' => 'Shoes',
-                'isModifier'    => 0,
-            ],
-        ]);
+
+        $faker = Faker::create('id_ID');
+
+        for ($i = 0; $i < 5; $i++) {
+            Category::insert(
+                [
+                    'category_code' => $faker->unique()->lexify('CAT-???????'),
+                    'category_name' => $faker->word(),
+                    'isModifier'    => $faker->randomElement([0, 1]),
+                    'created_at'    => now()->toDateTimeString(),
+                    'updated_at'    => now()->toDateTimeString(),
+                ]
+            );
+        }
     }
 }

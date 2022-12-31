@@ -12,6 +12,7 @@ class Supplier extends Model
     use HasFactory;
 
     // protected $guarded = [];
+    protected $table = 'suppliers';
     protected $fillable = ['supplier_name', 'supplier_address', 'supplier_phone', 'status'];
 
     public function product()

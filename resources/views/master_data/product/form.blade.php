@@ -14,8 +14,8 @@
                         <div class="card-body">
                             <div class="container">
                                 <div class="btn-group float-right" role="group" aria-label="Button group">
-                                    <button class="btn btn-lg btn-secondary" type="button">Cancel</button>
-                                    <button type="button" class="btn btn-lg btn-success btn-submit">Save</button>
+                                    <button class="btn btn-lg btn-secondary" type="button" href="/product">Cancel</button>
+                                    <button type="submit" class="btn btn-lg btn-success btn-submit">Save</button>
                                 </div>
                             </div>
                         </div>
@@ -47,9 +47,9 @@
                                     <div class="form-group">
                                         <label for="my-input">Brand</label>
                                         <select name="brand_code" id="brand_code" class="form-control input-value input-select">
-                                            {{-- @foreach ($brand as $item)
-                                                <option value="{{$item->Brand_Code}}">{{$item->Brand_Name}}</option>
-                                            @endforeach --}}
+                                            @foreach ($brand as $item)
+                                                <option value="{{$item->brand_code}}">{{$item->brand_name}}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
@@ -74,15 +74,15 @@
                                         <label for="">Choose Modifier</label>
                                         <select class="select2bs4 form-control" id="Modifier" name="Modifier[]" multiple="multiple">
                                             {{-- @foreach ($modifier as $item)
-                                                <option value="{{$item->Modifier_Code}}">{{$item->Modifier_Name}}</option>
+                                                <option value="{{$item->modifier_code}}">{{$item->modifier_name}}</option>
                                             @endforeach --}}
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="Tag_Code">Tag</label>
-                                        <select multiple class="tag" name="Tag_Code[]" id="Tag_Code" data-role="tagsinput" ></select>
+                                        <label for="tag_code">Tag</label>
+                                        <select multiple class="form-control tag" name="tag_code[]" id="tag_code" data-role="tagsinput" ></select>
                                         <small class="text-muted">Type and enter to add a tag.</small>
                                     </div>
                                     <input type="file" name="Product_Picture" id="Product_Picture" >
@@ -122,7 +122,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="my-input">Supplier</label>
-                                    <select name="supplier_code" id="supplier_code" required class="form-control input-value input-select">
+                                    <select name="supplier_code" required  id="supplier_code" class="form-control input-value input-select">
                                         @foreach ($supplier as $item)
                                             <option value="" selected>-- Select Supplier --</option>
                                             <option value="{{$item->supplier_code}}">{{$item->supplier_name}}</option>
@@ -133,7 +133,8 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="my-input">Supply Price</label>
-                                    <input type="number" onkeypress="return isNumberKey(event)" required value="0" name="Product_BuyPrice" id="Product_BuyPrice" class="form-control input-number input-value">
+                                    {{-- onkeypress="return isNumberKey(event)" --}}
+                                    <input type="number"  required value="0" name="Product_BuyPrice" id="Product_BuyPrice" class="form-control input-number input-value">
                                 </div>
                             </div>
                             <div class="col-md-12 kolomNoVariant" id="kolomNoVariant">
@@ -181,7 +182,8 @@
                                         <tr>
                                             <td style="border-top:1px solid #dee2e6;">Retail Price</td>
                                             <td style="border-top:1px solid #dee2e6;">
-                                                <input type="number" class="form-control input-value input-noVariant input-number" name="product_price" required id="product_price" onkeypress="return isNumberKey(event)" value="0">
+                                                {{-- onkeypress="return isNumberKey(event)"  --}}
+                                                <input type="number" class="form-control input-value input-noVariant input-number" name="product_price" required id="product_price" value="0">
                                             </td>
                                         </tr>
                                     </tbody>
@@ -199,13 +201,14 @@
 @endsection
 @push('js')
 <script>
-    $('#category_code').select2({
-        placeholder: "-- Select Category --",
-        allowClear: true
-    });
-    $('#supplier_code').select2({
-        placeholder: "-- Select Supplier --",
-        allowClear: true
-        });
+    // $('#category_code').select2({
+    //     placeholder: "-- Select Category --",
+    //     allowClear: true
+    // });
+    // $('#supplier_code').select2({
+    //     placeholder: "-- Select Supplier --",
+    //     allowClear: true
+    //     });
 </script>
+@include('master_data.product.js-create')
 @endpush

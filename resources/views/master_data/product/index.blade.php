@@ -9,6 +9,7 @@
                 <table class="table table-bordered" id="product-dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
+                            <th>Product Code</th>
                             <th>Product Name</th>
                             <th>Product Category</th>
                             <th>Brand</th>
@@ -34,6 +35,10 @@
             serverSide: true,
             ajax: "{{ route('product.list') }}",
             columns: [{
+                    data: 'product_code',
+                    name: 'product_code'
+                },
+                {
                     data: 'product_name',
                     name: 'product_name'
                 },
@@ -49,13 +54,9 @@
                     data: 'supplier_code',
                     name: 'supplier_code'
                 },
-                // {
-                //     data: 'product_price',
-                //     name: 'product_price'
-                // },
                 {
                     data: 'product_price',
-                    name: 'product_price'
+                    render: $.fn.dataTable.render.number( ',', '.', 2, 'Rp. ' ),
                 },
                 {
                     data: 'action',
