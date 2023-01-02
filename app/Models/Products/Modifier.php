@@ -6,15 +6,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Brand extends Model
+class Modifier extends Model
 {
     use HasFactory;
 
-    protected $table = 'brands';
-    protected $fillable = ['brand_code', 'status'];
+    protected $fillable = ['modifier_code', 'status'];
 
     public function product(): BelongsToMany
     {
-        return $this->belongsToMany(Product::class, 'brand_code');
+        return $this->belongsToMany(Product::class, 'modifier_code');
     }
 }

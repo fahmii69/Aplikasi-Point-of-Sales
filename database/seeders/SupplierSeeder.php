@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Supplier;
+use App\Models\Stocks\Supplier;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
@@ -16,7 +16,6 @@ class SupplierSeeder extends Seeder
      */
     public function run()
     {
-
         $faker = Faker::create('id_ID');
 
         for ($i = 0; $i < 5; $i++) {

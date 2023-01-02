@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Master\Product\StoreProductRequest;
 use App\Models\Products\Brand;
 use App\Models\Products\Category;
+use App\Models\Products\Modifier;
 use App\Models\Products\Product;
+use App\Models\Products\ProductModifier;
 use App\Models\Products\ProductTag;
-use App\Models\Supplier;
+use App\Models\Stocks\Supplier;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -74,18 +76,18 @@ class ProductController extends Controller
         // $model=DB::table('model')->get();
         $brand    = Brand::get();
         $supplier = Supplier::get();
-        // $modifier=DB::table('modifier')->get();
+        $modifier = Modifier::get();
         // $attribute=DB::table('attribute')
         // ->orderBy('Attribute_Name')
         // ->get();
 
-        // return view('admin.product.product',compact('category','model','brand','supplier','attribute','modifier'));
         return view($this->routeView . "form", [
             'title'    => "Add {$this->title}",
             'product'  => new Product(),
             'supplier' => $supplier,
             'category' => $category,
             'brand'    => $brand,
+            'modifier' => $modifier,
             'action'   => route($this->route . "store"),
         ]);
     }
@@ -101,7 +103,7 @@ class ProductController extends Controller
         DB::beginTransaction();
 
         $karakter = "ABCDEVGHIJKLMNOPQRSTUVWXYZ";
-        $pin = mt_rand(0, 9999999) . $karakter[rand(0, strlen($karakter) - 1)];
+        $pin = rand(0, 9999999) . $karakter[rand(0, strlen($karakter) - 1)];
         $string = str_shuffle($pin);
         $code = "PDT-" . $string;
 
@@ -119,7 +121,103 @@ class ProductController extends Controller
                         "product_code" => $code,
                         "tag_name" => $item,
                     ]);
+                };
+            }
+            if (isset($request->modifier_code)) {
+                foreach ($request->modifier_code as $item) {
+                    $karakter = "ABCDEVGHIJKLMNOPQRSTUVWXYZ";
+                    $pin = mt_rand(0, 9999999) . $karakter[rand(0, strlen($karakter) - 1)];
+                    $string = str_shuffle($pin);
+                    $modifierCode = "MPDT-" . $string;
+
+                    ProductModifier::create([
+                        'product_modifierCode' => $modifierCode,
+                        'product_code' => $code,
+                        'modifier_code' => $item,
+                        'status' => 'No',
+                    ]);
                 }
+
+                // $karakter = "ABCDEVGHIJKLMNOPQRSTUVWXYZ";
+                //         $pin = mt_rand(0, 9999999) . $karakter[rand(0, strlen($karakter) - 1)];
+                //         $string = str_shuffle($pin);
+                //         $stockCode = "STK-" . $string;
+
+                //         $Stock = new Stock;
+                //         $Stock->Stock_Code = $stockCode;
+                //         $Stock->Shop_Code = session('globalShop');
+                //         $Stock->Product_Code = $code;
+                //         $Stock->Variant_Code = $varCode;
+                //         $Stock->Stock_Quantity = $item['Current_Inventory'];
+                //         $Stock->Synchronized = 'No';
+                //         $Stock->save();
+
+                // if ($request->Options == 1) {
+                //     $listVariant = $request->listVariant;
+                //     foreach ($listVariant as $item) {
+                //         $varKarakter = "ABCDEVGHIJKLMNOPQRSTUVWXYZ";
+                //         $varPin = mt_rand(0, 9999999) . $varKarakter[rand(0, strlen($varKarakter) - 1)];
+                //         $varString = str_shuffle($varPin);
+                //         $varCode = "PROD-" . $varString;
+                //         $variantName = str_replace(",", " / ", $item['ValueCheck']);
+                //         VariantProduct::create([
+                //             "Variant_Code" => $varCode,
+                //             "Product_Code" => $code,
+                //             "ListVariant" => $item['ValueCheck'],
+                //             "Variant_Name" => $variantName,
+                //             "Product_BuyPrice" => $item['Product_BuyPrice'],
+                //             "Product_BarCode" => $item['Product_Barcode'],
+                //             "Product_Price" => $item['Product_Price'],
+                //             "Reorder_Quantity" => $item['Reorder_Quantity'],
+                //             "Product_TaxRate" => $item['Product_Tax'],
+                //             "Synchronized" => "No",
+                //         ]);
+
+                //         $karakter = "ABCDEVGHIJKLMNOPQRSTUVWXYZ";
+                //         $pin = mt_rand(0, 9999999) . $karakter[rand(0, strlen($karakter) - 1)];
+                //         $string = str_shuffle($pin);
+                //         $stockCode = "STK-" . $string;
+
+                //         $Stock = new Stock;
+                //         $Stock->Stock_Code = $stockCode;
+                //         $Stock->Shop_Code = session('globalShop');
+                //         $Stock->Product_Code = $code;
+                //         $Stock->Variant_Code = $varCode;
+                //         $Stock->Stock_Quantity = $item['Current_Inventory'];
+                //         $Stock->Synchronized = 'No';
+                //         $Stock->save();
+                //     }
+                // } else {
+                //     $varKarakter = "ABCDEVGHIJKLMNOPQRSTUVWXYZ";
+                //     $varPin = mt_rand(0, 9999999) . $varKarakter[rand(0, strlen($varKarakter) - 1)];
+                //     $varString = str_shuffle($varPin);
+                //     $varCode = "PROD-" . $varString;
+                //     VariantProduct::create([
+                //         "Variant_Code" => $varCode,
+                //         "Product_Code" => $code,
+                //         "Variant_Name" => $request->Product_Name,
+                //         "Product_BuyPrice" => $request->Product_BuyPrice,
+                //         // "Product_BarCode"=>$request->Product_Barcode,
+                //         "Product_Price" => $request->Product_Price,
+                //         "Reorder_Quantity" => $request->Reorder_Quantity,
+                //         "Product_TaxRate" => $request->Product_Tax,
+                //         "Synchronized" => "No",
+                //     ]);
+
+                //     $karakter = "ABCDEVGHIJKLMNOPQRSTUVWXYZ";
+                //     $pin = mt_rand(0, 9999999) . $karakter[rand(0, strlen($karakter) - 1)];
+                //     $string = str_shuffle($pin);
+                //     $stockCode = "STK-" . $string;
+
+                //     $Stock = new Stock;
+                //     $Stock->Stock_Code = $stockCode;
+                //     $Stock->Shop_Code = session('globalShop');
+                //     $Stock->Product_Code = $code;
+                //     $Stock->Variant_Code = $varCode;
+                //     $Stock->Stock_Quantity = $request->Current_Inventory;
+                //     $Stock->Synchronized = 'No';
+                //     $Stock->save();'
+                // };
             }
 
             $product->save();
@@ -160,9 +258,28 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Product $product)
     {
-        //
+        $category = Category::get();
+        // $model=DB::table('model')->get();
+        $brand    = Brand::get();
+        $supplier = Supplier::get();
+        $modifier = Modifier::get();
+
+        // dd($product);
+        // $attribute=DB::table('attribute')
+        // ->orderBy('Attribute_Name')
+        // ->get();
+
+        return view($this->routeView . "form", [
+            'title'    => "Add {$this->title}",
+            'product'  => $product,
+            'supplier' => $supplier,
+            'category' => $category,
+            'brand'    => $brand,
+            'modifier' => $modifier,
+            'action'   => route($this->route . "update", $product),
+        ]);
     }
 
     /**

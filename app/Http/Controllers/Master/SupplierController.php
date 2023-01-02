@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Master;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Master\Supplier\StoreSupplierRequest;
 use App\Http\Requests\Master\Supplier\UpdateSupplierRequest;
-use App\Models\Supplier;
+use App\Models\Stocks\Supplier;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;

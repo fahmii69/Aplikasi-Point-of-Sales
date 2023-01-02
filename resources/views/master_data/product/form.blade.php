@@ -14,7 +14,7 @@
                         <div class="card-body">
                             <div class="container">
                                 <div class="btn-group float-right" role="group" aria-label="Button group">
-                                    <button class="btn btn-lg btn-secondary" type="button" href="/product">Cancel</button>
+                                    <a class="btn btn-lg btn-secondary" type="button" href="/product">Cancel</a>
                                     <button type="submit" class="btn btn-lg btn-success btn-submit">Save</button>
                                 </div>
                             </div>
@@ -48,7 +48,7 @@
                                         <label for="my-input">Brand</label>
                                         <select name="brand_code" id="brand_code" class="form-control input-value input-select">
                                             @foreach ($brand as $item)
-                                                <option value="{{$item->brand_code}}">{{$item->brand_name}}</option>
+                                                <option value="{{$item->brand_code}}" {{ $item->brand_code == $product->brand_code ? 'selected' : '' }}>{{$item->brand_name}}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -58,8 +58,8 @@
                                         <label for="my-input">Product Type</label>
                                         <select name="category_code" required id="category_code" class="form-control input-value input-select @error('category_code') is-invalid @enderror">
                                             @foreach ($category as $item)
-                                            <option value="" selected>-- Select Category --</option>
-                                            <option value="{{$item->category_code}}" data-isModifier="{{$item->isModifier}}">{{$item->category_name}}</option>
+                                            {{-- <option value="" selected>-- Select Category tes --</option> --}}
+                                            <option value="{{$item->category_code}}" {{ $product->category_code === $item ? 'selected' : '' }} data-isModifier="{{$item->isModifier}}">{{$item->category_name}}</option>
                                             @endforeach
                                         </select>
                                         @error('category_code')
@@ -72,10 +72,10 @@
                                 <div class="col-md-12">
                                     <div class="form-group select-modifier">
                                         <label for="">Choose Modifier</label>
-                                        <select class="select2bs4 form-control" id="Modifier" name="Modifier[]" multiple="multiple">
-                                            {{-- @foreach ($modifier as $item)
+                                        <select class="select2bs4 form-control" id="modifier_code" name="modifier_code[]" multiple="multiple">
+                                            @foreach ($modifier as $item)
                                                 <option value="{{$item->modifier_code}}">{{$item->modifier_name}}</option>
-                                            @endforeach --}}
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
@@ -133,8 +133,8 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="my-input">Supply Price</label>
-                                    {{-- onkeypress="return isNumberKey(event)" --}}
-                                    <input type="number"  required value="0" name="Product_BuyPrice" id="Product_BuyPrice" class="form-control input-number input-value">
+
+                                    <input type="number"  required value="0" name="Product_BuyPrice" id="Product_BuyPrice" class="form-control input-number input-value" onkeypress="return isNumberKey(event)">
                                 </div>
                             </div>
                             <div class="col-md-12 kolomNoVariant" id="kolomNoVariant">
@@ -182,8 +182,7 @@
                                         <tr>
                                             <td style="border-top:1px solid #dee2e6;">Retail Price</td>
                                             <td style="border-top:1px solid #dee2e6;">
-                                                {{-- onkeypress="return isNumberKey(event)"  --}}
-                                                <input type="number" class="form-control input-value input-noVariant input-number" name="product_price" required id="product_price" value="0">
+                                                <input type="number" class="form-control input-value input-noVariant input-number" name="product_price" required id="product_price" value="" onkeypress="return isNumberKey(event)">
                                             </td>
                                         </tr>
                                     </tbody>
@@ -200,15 +199,5 @@
 <!-- /.card -->
 @endsection
 @push('js')
-<script>
-    // $('#category_code').select2({
-    //     placeholder: "-- Select Category --",
-    //     allowClear: true
-    // });
-    // $('#supplier_code').select2({
-    //     placeholder: "-- Select Supplier --",
-    //     allowClear: true
-    //     });
-</script>
 @include('master_data.product.js-create')
 @endpush

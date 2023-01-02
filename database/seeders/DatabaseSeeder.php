@@ -22,11 +22,16 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         $this->call([
+            ShopSeeder::class,
             SupplierSeeder::class,
             CategorySeeder::class,
             BrandSeeder::class,
+            ModifierSeeder::class,
+            ModifierDetailSeeder::class,
             ProductSeeder::class,
+            ProductModifierSeeder::class,
             ProductTagSeeder::class,
+            StockSeeder::class,
         ]);
     }
 }

@@ -238,7 +238,7 @@
         cariMarkup=(parseFloat(hasilMarkup*100)/parseFloat(buyPrice))/100;
     
         console.log(cariMarkup);
-        $('#Product_Price').val(hasilMarkup);
+        $('#product_price').val(hasilMarkup);
         // $('#Markup_Price').val(cariMarkup);
     }
     

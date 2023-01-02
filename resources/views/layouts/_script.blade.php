@@ -25,6 +25,26 @@
 
 <!-- Select2-->
 <script src="{{ asset('AdminLTE/plugins/select2/js/select2.min.js') }}"></script>
+<script type="text/javascript">
+    function ribuan(value){
+        var 	a = value;
+
+        var	reverse = a.toString().split('').reverse().join(''),
+            b 	= reverse.match(/\d{1,3}/g);
+            b	= b.join(',').split('').reverse().join('');
+            
+            c='Rp. '+b;
+            return c;
+    }  
+
+    function isNumberKey(evt) {
+    var charCode = (evt.which) ? evt.which : event.keyCode
+    if (charCode > 31 && (charCode < 48 || charCode > 57))
+      return false;
+
+    return true;
+  }
+</script>
 
 <!-- AdminLTE for demo purposes -->
 {{-- <script src="{{ asset('AdminLTE/dist/js/demo.js') }}"></script> --}}

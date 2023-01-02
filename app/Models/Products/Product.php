@@ -2,7 +2,7 @@
 
 namespace App\Models\Products;
 
-use App\Models\Supplier;
+use App\Models\Stocks\Supplier;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -26,5 +26,10 @@ class Product extends Model
     public function brand()
     {
         return $this->belongsTo(Brand::class, 'brand_code', 'brand_code');
+    }
+
+    public function modifier()
+    {
+        return $this->belongsTo(Modifier::class, 'modifier_code', 'modifier_code');
     }
 }

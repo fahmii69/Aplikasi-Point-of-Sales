@@ -3,20 +3,14 @@
 <!-- Default box -->
 <div class="container-fluid">
     <div class="card shadow mb-4">
-        <x-create-button route="{{route('product.create')}}" title=Product />
+        <x-create-button route="{{ route('category.create') }}" title=Category />
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="product-dataTable" width="100%" cellspacing="0">
+                <table class="table table-bordered" id="category-dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                            <th>No</th>
-                            <th>Product Code</th>
-                            <th>Product Name</th>
-                            <th>Product Category</th>
-                            <th>Brand</th>
-                            <th>Supplier</th>
-                            {{-- <th>Inventory</th> --}}
-                            <th>Product Price</th>
+                            <th>Category Code</th>
+                            <th>Category Name</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -31,39 +25,19 @@
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     $(document).ready(function () {
-        var table = $('#product-dataTable').DataTable({
+        var table = $('#category-dataTable').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('product.list') }}",
+            ajax: "{{ route('category.list') }}",
             columns: [{
-                    data      : 'DT_RowIndex',
-                    name      : 'DT_RowIndex',
-                    orderable : false,
+                    data: 'category_code',
+                    name: 'category_code',
+                    orderable: false,
                     searchable: false,
                 },
                 {
-                    data: 'product_code',
-                    name: 'product_code'
-                },
-                {
-                    data: 'product_name',
-                    name: 'product_name'
-                },
-                {
-                    data: 'category_code',
-                    name: 'category_code'
-                },
-                {
-                    data: 'brand_code',
-                    name: 'brand_code'
-                },
-                {
-                    data: 'supplier_code',
-                    name: 'supplier_code'
-                },
-                {
-                    data: 'product_price',
-                    render: $.fn.dataTable.render.number( ',', '.', 2, 'Rp. ' ),
+                    data: 'category_name',
+                    name: 'category_name',
                 },
                 {
                     data: 'action',
@@ -96,7 +70,7 @@
                 cancelButtonText: 'Cancel'
             }).then((result) => {
                 if (result.value) {
-                    let url = '{{ route('product.destroy', ':id') }}';
+                    let url = '{{ route('category.destroy', ':id') }}';
                         url = url.replace(':id', id);
 
                     $.ajax({
