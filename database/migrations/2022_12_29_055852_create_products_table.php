@@ -20,13 +20,11 @@ return new class extends Migration
             $table->string('product_price')->default(0);
             $table->string('supplier_code')->constrained();
             $table->string('category_code')->constrained();
-            $table->string('type_product')->nullable()->default(0);
-            $table->string('model_code')->nullable()->default(0);
-            $table->string('brand_code')->nullable()->default(0);
-            $table->string('levelAttribute')->nullable()->default(0);
-            $table->string('detailAttribute')->nullable()->default(0);
+            $table->string('options')->default(0);
+            $table->string('brand_code');
+            // $table->string('levelAttribute')->nullable()->default(0);
+            // $table->string('detailAttribute')->nullable()->default(0);
             $table->string('product_picture')->nullable()->default(0);
-
             $table->timestamps();
         });
     }

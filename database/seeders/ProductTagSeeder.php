@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Product\Tag;
 use App\Models\Products\Product;
 use App\Models\Products\ProductTag;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -23,7 +24,7 @@ class ProductTagSeeder extends Seeder
             ProductTag::insert(
                 [
                     'product_code' => Product::inRandomOrder()->first()->product_code,
-                    'tag_name'     => $faker->word(),
+                    'tag_id'       => Tag::inRandomOrder()->first()->id,
                     'created_at'   => now()->toDateTimeString(),
                     'updated_at'   => now()->toDateTimeString(),
                 ]

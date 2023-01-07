@@ -46,141 +46,199 @@
 
     $('#tag_code').select2({
         tags: true,
-        tokenSeparators: [',', ' '],
-        selectOnClose: true,
+        tokenSeparators: [','],
+        // selectOnClose: true,
+        // allowClear: true,
+
     });
 
     $('#supplier_code').select2({
         placeholder: '-- Select Supplier -- ',
         allowClear: true,
     });
+        
+    // $(document).on('keyup','.select2-selection--multiple',function(){
+    //     $(this).closest('.form-group').find('.delete_attribute').addClass('d-none');
+    // });
 
-    $('#Shop_Tax').select2({
-        width: 'auto'
-    });
-    
-    
-    
-    $(document).on('click','.tescollapse .header',function(){
-        $(this).toggleClass("openrow").nextUntil('.header').css('display', function(i, v) {
-            return this.style.display === 'table-row' ? 'none' : 'table-row';
-        });
-    })
-    
-    $(document).on('keyup','.select2-selection--multiple',function(){
-        $(this).closest('.form-group').find('.delete-attribute').addClass('d-none');
-    });
-    
-    function addAtrribute(){
-        banyakAttribute=$('#kolomAttribute').length;
-    }
-    
-    var varian=false;
-    $(document).on('click','#option1',function(){
-        if(varian){
-            // $('.input-noVariant').val('');
-            varian=false;
-            $('#kolomVariant').empty();
-            $('#kolomNoVariant').append(`
-                <table class="table" width="100%">
-                    <thead>
-                        <th>Outlet</th>
-                        <th>Current Inventory</th>
-                        <th>Re-order Quantity</th>
-                    </thead>
-                    <tbody>
-                        <td>Main Outlet</td>
-                        <td>
-                            <div class="form-group">
-                                <input type="number" class="input-value input-noVariant form-control" required name="Current_Inventory" id="Current_Inventory" onkeypress="return isNumberKey(event)" value="0">
-                            </div>
-                        </td>
-                        <td>
-                            <div class="form-group">
-                                <input type="number" class="input-value input-noVariant form-control" required name="Reorder_Quantity" id="Reorder_Quantity" onkeypress="return isNumberKey(event)" value="0">
-                            </div>
-                        </td>
-                    </tbody>
-                </table>
-            `);
-        }
-    });
-    
 
+    
+    // function addAtrribute(){
+    //     banyakAttribute=$('#kolomAttribute').length;
+    // }
     
     $(document).ready(function(){
         $('input[type=number]').val('0');
     });
-    
 
-    
-    
-    $(document).on('change','#headercheck', function () {
-        $('#daftarVariant').find('input:checkbox').not(this).prop('checked', this.checked);
-        var checkboxes = $('#daftarVariant').find('.checkboxlistitem');
-        var checkedboxes = checkboxes.filter(':checked');
-        document.getElementById('jumlahVariant').innerHTML=checkedboxes.length;
+    listAttribute=1;
+    $(document).on('click','.add-attribute',function(){
+        html = `{!! $html !!}`
+        $('#kolomAttribute').append(html);
+
+        $('#level_attribute'+listAttribute+'').select2({
+            placeholder: 'Choose an attribute',
+            allowClear : true
+        });
+        $('#level_attribute'+listAttribute+'').val('').trigger('change');
+
+        $('#detail_attribute'+listAttribute+'').select2({
+            tags: true,
+            tokenSeparators: [',', ' '],
+            selectOnClose: true,    
+        }).on("select2:select", function(e) {
+            level=$(this).closest('select').attr('data-list');
+            value=e.params.data.id;
+            // if(e.params.data.isNew){
+            //     $(this).find('[value="'+e.params.data.id+'"]').replaceWith('<option selected value="'+e.params.data.id+'">'+e.params.data.text+'</option>');
+            // }else{
+                
+            // }
+            // addVariant(level,value);
+            loopDataVariant(level,value);
+            showButtonAddValue();
+        }).on("select2:unselecting", function(e) {    
+            
+        });
+        listAttribute++;
     });
-    
-    $(document).on('change','.checkboxlistitem', function() {
-        var checkboxes = $('#daftarVariant').find('.checkboxlistitem');
-        var checkedboxes = checkboxes.filter(':checked');
-    
-        if(checkboxes.length === checkedboxes.length) {
-            $('#headercheck').prop('checked', true);
-        } else {
-            $('#headercheck').prop('checked', false);
-        }
-    
-        document.getElementById('jumlahVariant').innerHTML=checkedboxes.length;
-    });
-    
-    
-    function cartesian(dataLevel) {
-        var r = [], arg = dataLevel, max = arg.length-1;
-        function helper(arr, i) {
-            for (var j=0, l=arg[i].length; j<l; j++) {
-                var a = arr.slice(0); // clone arr
-                a.push(arg[i][j])
-                if (i==max) {
-                    r.push(a);
-                } else
-                    helper(a, i+1);
-            }
-        }
-        helper([], 0);
-        return r;
-    };
-    
+
+    $(document).on('click', '.delete_attribute', function () {
+            $(this).closest('.addAttribute').remove();
+        })
+
+    // function addVariantToTable(dataLevel,combine_array){
+    // }
+        
     // console.log(cartesian([8,10], ['merah','kuning'], ['katun','kanvas'],['tes1','tes2']));
+
+    // variantGlobalName='';
+    // $(document).on('keypress','.bootstrap-tagsinput',function(e){
+    //     checkLabel=$(this).closest('.form-group').find('label');
+    //     level=$(this).closest('.form-group').find('select').attr('data-list');
+    //     value=$(this).closest('.form-group').find('.input-attribute').val();
+    //     if(checkLabel.length==0){
+    //         if (e.which === 13 || e.which === 44 ) {
+    //             rowAttribute(level,variantGlobalName);             
+    //         }
+    //     }
+    // });
     
+    // $("select").on("select2:select", function (evt) {
+    //     var element = evt.params.data.element;
+    //     var $element = $(element);
+    //     $element.detach();
+    //     $(this).append($element);
+    //     $(this).trigger("change");
+    // });
     
-    $(document).on('click','.delete-attribute', function(){
-        $(this).closest('tr').remove();
-    });
-    
-    $("select").on("select2:select", function (evt) {
-        var element = evt.params.data.element;
-        var $element = $(element);
-        $element.detach();
-        $(this).append($element);
-        $(this).trigger("change");
-    });
-    
-    $(document).on("keydown", ".input-value", function(event) { 
-        return event.key != "Enter";
-    });
-    
-    function backToIndex(){
-        url='{{route('product.index')}}';
-    
-        window.location.href=url;
-    }
+    // $(document).on("keydown", ".input-value", function(event) { 
+    //     return event.key != "Enter";
+    // });
     
     hargaProduct_BuyPrice=0;
     hargaProduct_Price=0;
     
+    function changeTotalVariant(){
+        banyakVariant=$('#tableVariant').find('.tbodyHeader');
+        if(banyakVariant.length>1){
+            document.getElementById('totalVariant').innerHTML="This product has "+banyakVariant.length+" variants.";
+        }else{
+            document.getElementById('totalVariant').innerHTML="This product has "+banyakVariant.length+" variant.";
+        }
+    }
 
+    $(document).on('click','.btn-submit', function(){
+        // var checkrequired = $('input,textarea,select').filter('[required]:visible')
+        // var isValid = true;
+        // $(checkrequired).each( function() {
+        //         if ($(this).parsley().validate() !== true) isValid = false;
+        // });
+
+        // if(!isValid){
+        // return;
+        // }
+        
+        var form            = $('#form');
+            url             = "{{ $action }}";
+            product_name    = $('#product_name').val();
+            product_picture = $('#product_picture');
+            brand_code      = $('#brand_code').val();
+            category_code   = $('#category_code').val();
+            modifier_code   = $('#modifier_code').val();
+            tag_code        = $('#tag_code').val();
+        if(varian){
+            options=1;
+        }else{
+            options=0;
+        }
+        supplier_code     = $('#supplier_code').val();
+        product_buyPrice  = $('#product_buyPrice').val();
+        current_inventory = $('#current_inventory').val();
+        reorder_quantity  = $('#reorder_quantity').val();
+        product_tax       = $('#product_tax').val();
+        product_price     = $('#product_price').val();
+        attribute         = $('#kolomAttribute').find('.level_attribute');
+        cariAttr          = $('#kolomAttribute').find('.detail_attribute');
+        rowVariant        = $("#tableVariant").find('.tbodyHeader');
+
+        levelattr=[];
+        $.each(attribute,function(index,value){
+            levelattr.push($(this).val());
+        });
+
+        detailattr=[];
+        $.each(cariAttr,function(index,value){
+            detailattr.push($(this).val());
+        });    
+
+        listVariant=[];
+        $.each(rowVariant,function(index,value){
+            listValue=$(this).find('.input-detailVariant');
+            listVariant.push({
+                "ValueCheck"       : listValue[0].value,
+                "product_barcode"  : listValue[1].value,
+                "product_buyPrice" : listValue[2].value,
+                "product_price"    : listValue[3].value,
+                "current_inventory": listValue[4].value,
+                "reorder_quantity" : listValue[5].value,
+                "product_tax"      : listValue[6].value,
+            });
+        }); 
+        
+        $.ajax({
+            url:url,
+            data:{
+                "product_name"     : product_name,
+                "brand_code"       : brand_code,
+                "category_code"    : category_code,
+                "tag_code"         : tag_code,
+                "modifier_code"    : modifier_code,
+                "options"          : options,
+                "supplier_code"    : supplier_code,
+                "product_buyPrice" : product_buyPrice,
+                "current_inventory": current_inventory,
+                "reorder_quantity" : reorder_quantity,
+                "product_tax"      : product_tax,
+                "product_price"    : product_price,
+                "level_attribute"  : levelattr,
+                "detail_attribute" : detailattr,
+                "variant_list"     : listVariant,
+            },
+            type:'post',
+        }).done(function(data){
+            // suksesAddProduct();
+            // function done(){
+            //     urlIndex="{{route('product.index')}}";
+            //     window.location.href=urlIndex;
+            // }
+            // setTimeout(done,500);
+        }).fail(function(data){
+            // gagalAddProduct();
+
+            console.log(data)
+        });
+    });
     
     function gagalAddProduct(){
         Swal.fire(
@@ -207,7 +265,7 @@
     
     
     //edit
-    $(document).on('keyup','#Product_BuyPrice', function(){
+    $(document).on('keyup','#product_buyPrice', function(){
         value=$(this).val();
         if(!value){
             value=0;
@@ -223,13 +281,13 @@
         }
     });
     
-    $(document).on('keyup','#Markup_Price',function(){
+    $(document).on('keyup','#markup_price',function(){
         changePrice();
     });
     
     function changePrice(){
-        buyPrice=$("#Product_BuyPrice").val();
-        markupPrice=$("#Markup_Price").val();
+        buyPrice=$("#product_buyPrice").val();
+        markupPrice=$("#markup_price").val();
         if(!markupPrice){markupPrice=0;}
         if(!buyPrice){buyPrice=0;}
         hasilMarkup=parseFloat(buyPrice)+((parseFloat(buyPrice)*parseFloat(markupPrice))/100);
@@ -241,41 +299,5 @@
         $('#product_price').val(hasilMarkup);
         // $('#Markup_Price').val(cariMarkup);
     }
-    
-    function showButtonAddValue(){
-        dataVariant1=[];
-        banyakLevel=$('#kolomAttribute').find('tr');
         
-        $.each(banyakLevel, function(index,value){
-            dataselect=$(this).find('.input-attribute').select2('data');
-            dataVariant1.push(dataselect);
-        });
-    
-        combine_array = cartesian(dataVariant1);
-    
-        $.each(combine_array,function(index,value){
-            dataVariant2=[];
-            $.each(value,function(i1,v1){
-                dataVariant2.push(v1.text);
-            });
-            cek1=$('#tableVariant').find('.tbodyHeader');
-            dataVariantIsNew=true;
-            $.each(cek1,function(index,value){
-                cek2=$(this).find('.input-detailVariant')[0].value;
-                cek3=dataVariant2.toString();
-                if(cek3==cek2){
-                    dataVariantIsNew=false;
-                }            
-            });
-        });
-    
-        if(dataVariantIsNew){
-            $('.btn-openModalVariant').removeClass('d-none');
-        }else{
-            $('.btn-openModalVariant').addClass('d-none');
-        }
-        
-    }
-    
-    
-    </script>
+</script>

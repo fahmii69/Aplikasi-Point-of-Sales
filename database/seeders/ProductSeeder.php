@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use App\Models\Products\Brand;
 use App\Models\Products\Category;
 use App\Models\Products\Product;
+use App\Models\Products\ProductAttribute;
+use App\Models\Products\ProductAttributeDetail;
 use App\Models\Stocks\Supplier;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -30,12 +32,7 @@ class ProductSeeder extends Seeder
                     'product_price'   => $faker->numerify('###000'),
                     'supplier_code'   => Supplier::inRandomOrder()->first()->supplier_code,
                     'category_code'   => Category::inRandomOrder()->first()->category_code,
-                    'type_product'    => '1',
-                    'model_code'      => '1',
                     'brand_code'      => Brand::inRandomOrder()->first()->brand_code,
-                    'levelAttribute'  => '1',
-                    'detailAttribute' => '1',
-
                     'created_at'  => now()->toDateTimeString(),
                     'updated_at'  => now()->toDateTimeString(),
                 ]

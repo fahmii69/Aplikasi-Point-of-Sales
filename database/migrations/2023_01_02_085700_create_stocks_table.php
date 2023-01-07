@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('product_code')->constrained();
             $table->string('shop_code')->nullable();
             $table->string('variant_code')->nullable();
-            $table->string('status');
+            $table->string('status')->nullable();
             $table->timestamps();
         });
     }

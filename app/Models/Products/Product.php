@@ -2,6 +2,7 @@
 
 namespace App\Models\Products;
 
+use App\Models\Stocks\Stock;
 use App\Models\Stocks\Supplier;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,6 +13,9 @@ class Product extends Model
 
     protected $table = 'products';
     protected $guarded = [];
+    protected $appends = [
+        'total_inventory'
+    ];
 
     public function supplier()
     {
@@ -30,6 +34,31 @@ class Product extends Model
 
     public function modifier()
     {
-        return $this->belongsTo(Modifier::class, 'modifier_code', 'modifier_code');
+        return $this->hasMany(ProductModifier::class, 'product_code', 'product_code');
+    }
+
+    public function stocks()
+    {
+        return $this->hasMany(Stock::class, 'product_code', 'product_code');
+    }
+
+    public function variant()
+    {
+        return $this->belongsTo(ProductVariant::class, 'product_code', 'product_code');
+    }
+
+    public function productAttribute()
+    {
+        return $this->belongsTo(ProductAttribute::class, 'product_code', 'product_code');
+    }
+
+    public function getTotalInventoryAttribute()
+    {
+        return $this->stocks?->sum('stock_quantity');
+    }
+
+    public function tag()
+    {
+        return $this->hasMany(ProductTag::class, 'product_code', 'product_code');
     }
 }

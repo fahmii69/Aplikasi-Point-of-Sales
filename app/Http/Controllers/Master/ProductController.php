@@ -4,22 +4,30 @@ namespace App\Http\Controllers\Master;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Master\Product\StoreProductRequest;
+use App\Models\Products\Tag;
+use App\Models\Products\Attribute;
 use App\Models\Products\Brand;
 use App\Models\Products\Category;
 use App\Models\Products\Modifier;
 use App\Models\Products\Product;
+use App\Models\Products\ProductAttribute;
+use App\Models\Products\ProductAttributeDetail;
 use App\Models\Products\ProductModifier;
 use App\Models\Products\ProductTag;
+use App\Models\Products\ProductVariant;
+use App\Models\Stocks\Stock;
 use App\Models\Stocks\Supplier;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\View as FacadesView;
 
 class ProductController extends Controller
 {
     /**
      * Constructor
+     * 
      */
     public function __construct(
         protected string $title = "Product",
@@ -43,7 +51,8 @@ class ProductController extends Controller
     public function getProduct(Request $request)
     {
         if ($request->ajax()) {
-            $data = Product::latest('id')->get();
+            $data = Product::latest('id');
+
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->editColumn('supplier_code', function ($data) {
@@ -72,23 +81,30 @@ class ProductController extends Controller
      */
     public function create()
     {
-        $category = Category::get();
-        // $model=DB::table('model')->get();
-        $brand    = Brand::get();
-        $supplier = Supplier::get();
-        $modifier = Modifier::get();
-        // $attribute=DB::table('attribute')
-        // ->orderBy('Attribute_Name')
-        // ->get();
+        $category  = Category::get();
+        $brand     = Brand::get();
+        $supplier  = Supplier::get();
+        $modifier  = Modifier::get();
+        $attribute = Attribute::get();
+        $tag       = Tag::get();
+        // $html = "";
+        // foreach ($pengembalian->getDetail as $item) {
+        $html = FacadesView::make('components.product.add-attribute', compact('attribute'));
+        $option1 = FacadesView::make('components.product.kolom-option1', compact('attribute'));
+        // }
 
-        return view($this->routeView . "form", [
-            'title'    => "Add {$this->title}",
-            'product'  => new Product(),
-            'supplier' => $supplier,
-            'category' => $category,
-            'brand'    => $brand,
-            'modifier' => $modifier,
-            'action'   => route($this->route . "store"),
+        return view($this->routeView . "create", [
+            'title'     => "Add {$this->title}",
+            'product'   => new Product(),
+            'supplier'  => $supplier,
+            'category'  => $category,
+            'brand'     => $brand,
+            'modifier'  => $modifier,
+            'attribute' => $attribute,
+            'tag'       => $tag,
+            'html'       => $html,
+            'option1'       => $option1,
+            'action'    => route($this->route . "store"),
         ]);
     }
 
@@ -110,20 +126,31 @@ class ProductController extends Controller
         try {
 
             $product = new Product($request->safe(
-                ['product_name', 'product_price', 'brand_code', 'supplier_code', 'category_code', 'type_product']
+                ['product_name', 'product_price', 'brand_code', 'supplier_code', 'category_code', 'options']
             ));
             $product->product_code = $code;
+            $product->save();
 
-            // dd($product);
-            if (isset($request->tag_code)) {
-                foreach ($request->tag_code as $item) {
+            if ($request->tag_code) {
+                foreach ($request->tag_code as $item => $value) {
+
+                    if (!is_numeric($value)) {
+
+                        $tag = new Tag;
+                        $tag->tag_name = $value;
+                        $tag->save();
+
+                        $value = $tag->id;
+                    }
+
                     ProductTag::create([
                         "product_code" => $code,
-                        "tag_name" => $item,
+                        "tag_id" => $value,
                     ]);
                 };
             }
-            if (isset($request->modifier_code)) {
+
+            if ($request->modifier_code) {
                 foreach ($request->modifier_code as $item) {
                     $karakter = "ABCDEVGHIJKLMNOPQRSTUVWXYZ";
                     $pin = mt_rand(0, 9999999) . $karakter[rand(0, strlen($karakter) - 1)];
@@ -137,90 +164,86 @@ class ProductController extends Controller
                         'status' => 'No',
                     ]);
                 }
-
-                // $karakter = "ABCDEVGHIJKLMNOPQRSTUVWXYZ";
-                //         $pin = mt_rand(0, 9999999) . $karakter[rand(0, strlen($karakter) - 1)];
-                //         $string = str_shuffle($pin);
-                //         $stockCode = "STK-" . $string;
-
-                //         $Stock = new Stock;
-                //         $Stock->Stock_Code = $stockCode;
-                //         $Stock->Shop_Code = session('globalShop');
-                //         $Stock->Product_Code = $code;
-                //         $Stock->Variant_Code = $varCode;
-                //         $Stock->Stock_Quantity = $item['Current_Inventory'];
-                //         $Stock->Synchronized = 'No';
-                //         $Stock->save();
-
-                // if ($request->Options == 1) {
-                //     $listVariant = $request->listVariant;
-                //     foreach ($listVariant as $item) {
-                //         $varKarakter = "ABCDEVGHIJKLMNOPQRSTUVWXYZ";
-                //         $varPin = mt_rand(0, 9999999) . $varKarakter[rand(0, strlen($varKarakter) - 1)];
-                //         $varString = str_shuffle($varPin);
-                //         $varCode = "PROD-" . $varString;
-                //         $variantName = str_replace(",", " / ", $item['ValueCheck']);
-                //         VariantProduct::create([
-                //             "Variant_Code" => $varCode,
-                //             "Product_Code" => $code,
-                //             "ListVariant" => $item['ValueCheck'],
-                //             "Variant_Name" => $variantName,
-                //             "Product_BuyPrice" => $item['Product_BuyPrice'],
-                //             "Product_BarCode" => $item['Product_Barcode'],
-                //             "Product_Price" => $item['Product_Price'],
-                //             "Reorder_Quantity" => $item['Reorder_Quantity'],
-                //             "Product_TaxRate" => $item['Product_Tax'],
-                //             "Synchronized" => "No",
-                //         ]);
-
-                //         $karakter = "ABCDEVGHIJKLMNOPQRSTUVWXYZ";
-                //         $pin = mt_rand(0, 9999999) . $karakter[rand(0, strlen($karakter) - 1)];
-                //         $string = str_shuffle($pin);
-                //         $stockCode = "STK-" . $string;
-
-                //         $Stock = new Stock;
-                //         $Stock->Stock_Code = $stockCode;
-                //         $Stock->Shop_Code = session('globalShop');
-                //         $Stock->Product_Code = $code;
-                //         $Stock->Variant_Code = $varCode;
-                //         $Stock->Stock_Quantity = $item['Current_Inventory'];
-                //         $Stock->Synchronized = 'No';
-                //         $Stock->save();
-                //     }
-                // } else {
-                //     $varKarakter = "ABCDEVGHIJKLMNOPQRSTUVWXYZ";
-                //     $varPin = mt_rand(0, 9999999) . $varKarakter[rand(0, strlen($varKarakter) - 1)];
-                //     $varString = str_shuffle($varPin);
-                //     $varCode = "PROD-" . $varString;
-                //     VariantProduct::create([
-                //         "Variant_Code" => $varCode,
-                //         "Product_Code" => $code,
-                //         "Variant_Name" => $request->Product_Name,
-                //         "Product_BuyPrice" => $request->Product_BuyPrice,
-                //         // "Product_BarCode"=>$request->Product_Barcode,
-                //         "Product_Price" => $request->Product_Price,
-                //         "Reorder_Quantity" => $request->Reorder_Quantity,
-                //         "Product_TaxRate" => $request->Product_Tax,
-                //         "Synchronized" => "No",
-                //     ]);
-
-                //     $karakter = "ABCDEVGHIJKLMNOPQRSTUVWXYZ";
-                //     $pin = mt_rand(0, 9999999) . $karakter[rand(0, strlen($karakter) - 1)];
-                //     $string = str_shuffle($pin);
-                //     $stockCode = "STK-" . $string;
-
-                //     $Stock = new Stock;
-                //     $Stock->Stock_Code = $stockCode;
-                //     $Stock->Shop_Code = session('globalShop');
-                //     $Stock->Product_Code = $code;
-                //     $Stock->Variant_Code = $varCode;
-                //     $Stock->Stock_Quantity = $request->Current_Inventory;
-                //     $Stock->Synchronized = 'No';
-                //     $Stock->save();'
-                // };
             }
 
-            $product->save();
+            $arrayProductAttributeCode = [];
+
+            if ($request->level_attribute) {
+                foreach ($request->level_attribute as $item => $v) {
+                    $karakter = "ABCDEVGHIJKLMNOPQRSTUVWXYZ";
+                    $pin = mt_rand(0, 9999999) . $karakter[rand(0, strlen($karakter) - 1)];
+                    $string = str_shuffle($pin);
+                    $product_attributeCode = "PA-" . $string;
+                    $arrayProductAttributeCode[] = $product_attributeCode;
+
+                    ProductAttribute::create([
+                        'product_attributeCode' => $product_attributeCode,
+                        'product_code'          => $code,
+                        'attribute_code'        => $v,
+                    ]);
+                }
+            }
+
+            if ($request->detail_attribute) {
+                foreach ($request->detail_attribute as $key => $v) {
+                    for ($i = 0; $i < count($request->detail_attribute); $i++) {
+                        ProductAttributeDetail::create([
+                            'product_attributeCode' => $arrayProductAttributeCode[$key],
+                            'detail_attribute'      => $v[$i],
+                        ]);
+                    }
+                }
+            }
+
+            if ($request->options == 1) {
+                foreach ($request->variant_list as $item) {
+                    $varKarakter = "ABCDEVGHIJKLMNOPQRSTUVWXYZ";
+                    $varPin = mt_rand(0, 9999999) . $varKarakter[rand(0, strlen($varKarakter) - 1)];
+                    $varString = str_shuffle($varPin);
+                    $varCode = "PROD-" . $varString;
+                    $variantName = str_replace(",", " / ", $item['ValueCheck']);
+                    ProductVariant::create([
+                        "variant_code" => $varCode,
+                        "product_code" => $code,
+                        "variant_list" => $item['ValueCheck'],
+                        "variant_name" => $variantName,
+                        "product_buyPrice" => $item['product_buyPrice'],
+                        "product_barcode" => $item['product_barcode'],
+                        "product_price" => $item['product_price'],
+                        "reorder_quantity" => $item['reorder_quantity'],
+                        "product_taxRate" => $item['product_tax'],
+                    ]);
+
+                    $karakter = "ABCDEVGHIJKLMNOPQRSTUVWXYZ";
+                    $pin = mt_rand(0, 9999999) . $karakter[rand(0, strlen($karakter) - 1)];
+                    $string = str_shuffle($pin);
+                    $stockCode = "STK-" . $string;
+
+                    $stock = new Stock;
+                    $stock->stock_code = $stockCode;
+                    // $stock->shop_code = session('globalShop');
+                    $stock->product_code = $code;
+                    $stock->variant_code = $varCode;
+                    $stock->stock_quantity = $item['current_inventory'];
+                    // $stock->Synchronized = 'No';
+                    $stock->save();
+                }
+            } else {
+
+                $karakter = "ABCDEVGHIJKLMNOPQRSTUVWXYZ";
+                $pin = mt_rand(0, 9999999) . $karakter[rand(0, strlen($karakter) - 1)];
+                $string = str_shuffle($pin);
+                $stockCode = "STK-" . $string;
+
+                $stock = new Stock();
+                $stock->stock_Code = $stockCode;
+                // $Stock->Shop_Code = session('globalShop');
+                $stock->product_code = $code;
+                // $Stock->variant_code = $varCode;
+                $stock->stock_quantity = $request->current_inventory;
+                // $Stock->Synchronized = 'No';
+                $stock->save();
+            };
 
             $notification = array(
                 'message'    => 'Product data has been added!',
@@ -233,12 +256,12 @@ class ProductController extends Controller
                 'alert-type' => 'error'
             );
 
-            return redirect()->back()->with($notification)->withInput();
+            // return redirect()->back()->with($notification)->withInput();
         }
         DB::commit();
-        return redirect()
-            ->route($this->route . "index")
-            ->with($notification);
+        // return redirect()
+        //     ->route($this->route . "index")
+        //     ->with($notification);
     }
 
     /**
@@ -261,25 +284,51 @@ class ProductController extends Controller
     public function edit(Product $product)
     {
         $category = Category::get();
-        // $model=DB::table('model')->get();
         $brand    = Brand::get();
         $supplier = Supplier::get();
         $modifier = Modifier::get();
+        $tag      = Tag::get();
 
-        // dd($product);
-        // $attribute=DB::table('attribute')
-        // ->orderBy('Attribute_Name')
-        // ->get();
+        $attribute  = Attribute::get();
+        $levelAttribute = ProductAttribute::first();
+        $productVariant = ProductVariant::query()
+            ->leftjoin('stocks', 'stocks.variant_code', 'product_variants.variant_code')
+            ->select('product_variants.*', 'stocks.stock_quantity as current_inventory')
+            // ->where('variant_product.Product_Code', $id)
+            ->get();
 
-        return view($this->routeView . "form", [
-            'title'    => "Add {$this->title}",
-            'product'  => $product,
-            'supplier' => $supplier,
-            'category' => $category,
-            'brand'    => $brand,
-            'modifier' => $modifier,
-            'action'   => route($this->route . "update", $product),
+        $listTag = $product->tag->pluck('tag_id');
+        $listModifier = $product->modifier->pluck('modifier_code');
+
+        // foreach ($pengembalian->getDetail as $item) {
+        //     $html .= FacadesView::make('components.pengembalian_buku', compact('item', 'status'));
+        // }
+
+        return view($this->routeView . "edit", [
+            'title'          => "Edit {$this->title}",
+            'product'        => $product,
+            'supplier'       => $supplier,
+            'category'       => $category,
+            'brand'          => $brand,
+            'modifier'       => $modifier,
+            'attribute'      => $attribute,
+            'tag'            => $tag,
+            'productVariant' => $productVariant,
+            'levelAttribute' => $levelAttribute,
+            'action'         => route($this->route . "update", $product),
+            'listTag'        => $listTag,
+            'listModifier'        => $listModifier,
         ]);
+    }
+
+    public function getModifier($id)
+    {
+        $data = DB::table('product_modifiers as a')
+            ->leftjoin('modifiers as b', 'a.Modifier_Code', 'b.modifier_code')
+            ->where('a.Product_Code', $id)
+            ->get();
+
+        return $data;
     }
 
     /**

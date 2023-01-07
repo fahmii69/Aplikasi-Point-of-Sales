@@ -27,10 +27,15 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             BrandSeeder::class,
             ModifierSeeder::class,
+            TagSeeder::class,
             ModifierDetailSeeder::class,
+            AttributeSeeder::class,
             ProductSeeder::class,
             ProductModifierSeeder::class,
             ProductTagSeeder::class,
+            ProductAttributeSeeder::class,
+            ProductAttributeDetailSeeder::class,
+            ProductVariantSeeder::class,
             StockSeeder::class,
         ]);
     }

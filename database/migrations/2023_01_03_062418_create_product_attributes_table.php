@@ -13,10 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('product_tags', function (Blueprint $table) {
+        Schema::create('product_attributes', function (Blueprint $table) {
             $table->id();
+            $table->string('product_attributeCode');
             $table->string('product_code')->constrained();
-            $table->string('tag_id')->constrained();
+            $table->string('attribute_code');
+            $table->string('level')->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('product_tags');
+        Schema::dropIfExists('product_attributes');
     }
 };

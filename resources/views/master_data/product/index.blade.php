@@ -15,7 +15,7 @@
                             <th>Product Category</th>
                             <th>Brand</th>
                             <th>Supplier</th>
-                            {{-- <th>Inventory</th> --}}
+                            <th>Inventory</th>
                             <th>Product Price</th>
                             <th>Action</th>
                         </tr>
@@ -60,6 +60,10 @@
                 {
                     data: 'supplier_code',
                     name: 'supplier_code'
+                },
+                {
+                    data: 'total_inventory',
+                    name: 'total_inventory'
                 },
                 {
                     data: 'product_price',

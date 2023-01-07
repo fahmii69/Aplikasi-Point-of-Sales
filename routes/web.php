@@ -23,4 +23,5 @@ Route::get('/supplier/get', [SupplierController::class, 'getSupplier'])->name('s
 Route::resource('supplier', SupplierController::class);
 
 Route::get('/product/get', [ProductController::class, 'getProduct'])->name('product.list');
+Route::get('/product/getModifier/{id}', [ProductController::class, 'getModifier'])->name('product.getModifier');
 Route::resource('product', ProductController::class);

@@ -30,11 +30,11 @@ class StoreProductRequest extends FormRequest
             'product_price'   => 'required',
             'supplier_code'   => 'required',
             'category_code'   => 'required',
-            'type_product'    => 'nullable',
+            'options'         => 'required',
             'model_code'      => 'nullable',
             'brand_code'      => 'nullable',
-            'levelAttribute'  => 'nullable',
-            'detailAttribute' => 'nullable',
+            // 'levelAttribute'  => 'nullable',
+            // 'detailAttribute' => 'nullable',
             'product_picture' => 'nullable',
 
         ];
@@ -55,8 +55,8 @@ class StoreProductRequest extends FormRequest
             'category_code.required' => ' Category must be filled in.',
             'model_code'             => ' Model must be filled in.',
             'brand_code'             => ' Brand must be filled in.',
-            'levelAttribute'         => ' must be filled in.',
-            'detailAttribute'        => ' must be filled in.',
+            // 'levelAttribute'         => ' must be filled in.',
+            // 'detailAttribute'        => ' must be filled in.',
             'product_picture'        => ' must be filled in.',
 
         ];

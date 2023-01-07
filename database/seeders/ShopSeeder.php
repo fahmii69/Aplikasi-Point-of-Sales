@@ -36,7 +36,7 @@ class ShopSeeder extends Seeder
                 'shop_default'  => '',
                 'created_at'    => now()->toDateTimeString(),
                 'updated_at'    => now()->toDateTimeString(),
-            ]
+            ],
         );
     }
 }

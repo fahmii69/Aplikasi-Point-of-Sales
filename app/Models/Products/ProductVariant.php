@@ -4,20 +4,15 @@ namespace App\Models\Products;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class ProductTag extends Model
+class ProductVariant extends Model
 {
     use HasFactory;
-
     protected $guarded = [];
 
-    public function product()
+    public function products(): HasMany
     {
         return $this->hasMany(Product::class, 'product_code', 'product_code');
-    }
-
-    public function tags()
-    {
-        return $this->hasMany(Tag::class, 'tag_id');
     }
 }
