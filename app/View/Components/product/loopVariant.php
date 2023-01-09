@@ -1,10 +1,10 @@
 <?php
 
-namespace App\View\Components\product;
+namespace App\View\Components\Product;
 
 use Illuminate\View\Component;
 
-class loopVariant extends Component
+class LoopVariant extends Component
 {
     /**
      * Create a new component instance.

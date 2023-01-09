@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Product\Tag;
+use App\Models\Products\Tag;
 use App\Models\Products\Product;
 use App\Models\Products\ProductTag;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;

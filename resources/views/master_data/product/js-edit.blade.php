@@ -35,8 +35,7 @@
                     });
             });
         }
-        // $('.input-value').val('');
-        // $('.input-select').val('').trigger('change');
+
         // show data
         $("#product_code").val('{{$product->product_code}}');
         $("#product_name").val('{{$product->product_name}}');
@@ -997,18 +996,6 @@
                 rowAttribute(level,variantGlobalName);             
             }
         }
-    });
-    
-    $("select").on("select2:select", function (evt) {
-        var element = evt.params.data.element;
-        var $element = $(element);
-        $element.detach();
-        $(this).append($element);
-        $(this).trigger("change");
-    });
-    
-    $(document).on("keydown", ".input-value", function(event) { 
-        return event.key != "Enter";
     });
     
     function backToIndex(){

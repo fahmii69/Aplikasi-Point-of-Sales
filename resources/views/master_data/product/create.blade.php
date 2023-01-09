@@ -5,9 +5,6 @@
     <div class="card shadow mb-4">
         <form action="{{ $action }}" method="POST" id="form" enctype="multipart/form-data">
             @csrf
-            @if ($product->id)
-            @method('put')
-            @endif
             <div class="sticky-top mb-3">
                 <div class="card" style="width:100%;">
                     <div class="card-body">
@@ -30,12 +27,11 @@
                     </div>
                     <div class="col-md-8">
                         <div class="row">
-
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label for="my-input"> Product Name</label>
                                     <input type="text" id="product_name" name="product_name"
-                                        value="{{ old('product_name' , $product->product_name) }}" required
+                                        value="{{ old('product_name' , $product->product_name) }}" 
                                         placeholder="Enter Product Name..."
                                         class="form-control @error('product_name') is-invalid @enderror">
                                     @error('product_name')
@@ -61,10 +57,9 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="my-input">Product Type</label>
-                                    <select name="category_code" required id="category_code"
+                                    <select name="category_code"  id="category_code"
                                         class="form-control input-value input-select @error('category_code') is-invalid @enderror">
                                         @foreach ($category as $item)
-                                        {{-- <option value="" selected>-- Select Category tes --</option> --}}
                                         <option value="{{$item->category_code}}"
                                             {{ $product->category_code === $item ? 'selected' : '' }}
                                             data-isModifier="{{$item->isModifier}}">{{$item->category_name}}</option>
@@ -91,8 +86,6 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label for="tag_code">Tag</label>
-                                    {{-- <select multiple class="form-control tag" name="tag_code[]" id="tag_code"
-                                        data-role="tagsinput"></select> --}}
                                         <select multiple class="form-control" class="tag" name="tag_code[]" id="tag_code" data-role="tagsinput" >
                                             @forelse ($tag as $item)
                                                 <option value="{{ $item->id }}"
@@ -100,11 +93,11 @@
                                             @empty
                                                 
                                             @endforelse
-                                            <option value="Green">Green</option>
                                         </select>
                                     <small class="text-muted">Type and enter to add a tag.</small>
                                 </div>
-                                <input type="file" name="product_picture" id="product_picture">
+                                    <i class="fa fa-folder-open"></i><input type="file" name="product_picture" id="product_picture"
+                                        multiple>
                             </div>
                         </div>
                     </div>
@@ -143,7 +136,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="my-input">Supplier</label>
-                                    <select name="supplier_code" required id="supplier_code"
+                                    <select name="supplier_code"  id="supplier_code"
                                         class="form-control input-value input-select">
                                         @foreach ($supplier as $item)
                                         <option value="" selected>-- Select Supplier --</option>
@@ -156,7 +149,7 @@
                                 <div class="form-group">
                                     <label for="my-input">Supply Price</label>
 
-                                    <input type="number" required value="0" name="product_buyPrice"
+                                    <input type="number"  value="0" name="product_buyPrice"
                                         id="product_buyPrice" class="form-control input-number input-value"
                                         onkeypress="return isNumberKey(event)">
                                 </div>
@@ -173,14 +166,14 @@
                                         <td>
                                             <div class="form-group">
                                                 <input type="number" class="input-value input-noVariant form-control"
-                                                    required name="current_inventory" id="current_inventory"
+                                                     name="current_inventory" id="current_inventory"
                                                     onkeypress="return isNumberKey(event)" value="0">
                                             </div>
                                         </td>
                                         <td>
                                             <div class="form-group">
                                                 <input type="number" class="input-value input-noVariant form-control"
-                                                    required name="reorder_quantity" id="reorder_quantity"
+                                                     name="reorder_quantity" id="reorder_quantity"
                                                     onkeypress="return isNumberKey(event)" value="0">
                                             </div>
                                         </td>
@@ -244,7 +237,7 @@
                                                 <td style="border-top:1px solid #dee2e6;">
                                                     <input type="number"
                                                         class="form-control input-value input-noVariant input-number"
-                                                        name="product_price" required id="product_price" value=""
+                                                        name="product_price"  id="product_price" value=""
                                                         onkeypress="return isNumberKey(event)">
                                                 </td>
                                             </tr>
@@ -267,6 +260,29 @@
 <!-- /.card -->
 @endsection
 @push('js')
+<script>
+    // INPUT TYPE FILE
+    $(document).on('change', '.btn-file :file', function () {
+        var input = $(this),
+            numFiles = input.get(0).files ? input.get(0).files.length : 1,
+            label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+        input.trigger('fileselect', [numFiles, label]);
+    });
+
+    $(document).ready(function () {
+        $('.btn-file :file').on('fileselect', function (_event, numFiles, label) {
+            var input = $(this).parents('.input-group').find(':text'),
+                log = numFiles > 1 ? numFiles + ' files selected' : label;
+
+            if (input.length) {
+                input.val(log);
+            } else {
+                // if( log ) alert(log);
+            }
+        });
+    });
+
+</script>
 @include('master_data.product.js-create')
 @include('master_data.product.js-variant')
 

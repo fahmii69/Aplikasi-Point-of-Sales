@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('variant_name');
             $table->string('variant_list');
             $table->string('product_price');
-            $table->string('product_barcode')->unique()->nullable();
+            $table->string('product_barcode')->unique()->nullable()->default('');
             $table->string('product_buyPrice');
             $table->string('product_taxRate')->default(0);
             $table->string('markup_price')->nullable();

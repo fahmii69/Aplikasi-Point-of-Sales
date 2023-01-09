@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('brand_code');
             // $table->string('levelAttribute')->nullable()->default(0);
             // $table->string('detailAttribute')->nullable()->default(0);
-            $table->string('product_picture')->nullable()->default(0);
+            $table->longText('product_picture')->nullable();
             $table->timestamps();
         });
     }

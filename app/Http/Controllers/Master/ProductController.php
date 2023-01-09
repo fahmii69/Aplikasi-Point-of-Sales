@@ -102,9 +102,9 @@ class ProductController extends Controller
             'modifier'  => $modifier,
             'attribute' => $attribute,
             'tag'       => $tag,
-            'html'       => $html,
-            'option1'       => $option1,
-            'action'    => route($this->route . "store"),
+            'html'      => $html,
+            'option1'   => $option1,
+            'action'    => route('product.store'),
         ]);
     }
 
@@ -116,6 +116,10 @@ class ProductController extends Controller
      */
     public function store(StoreProductRequest $request)
     {
+        $response = [
+            'success' => false,
+        ];
+
         DB::beginTransaction();
 
         $karakter = "ABCDEVGHIJKLMNOPQRSTUVWXYZ";
@@ -123,13 +127,28 @@ class ProductController extends Controller
         $string = str_shuffle($pin);
         $code = "PDT-" . $string;
 
+        // dd($request->all());
         try {
 
             $product = new Product($request->safe(
                 ['product_name', 'product_price', 'brand_code', 'supplier_code', 'category_code', 'options']
             ));
-            $product->product_code = $code;
+
+            // $image = "";
+            if ($request->product_picture === "undefined") {
+
+                $image = "";
+            } else {
+
+                $image = "data:image/png;base64," .
+                    base64_encode(file_get_contents($request->file('product_picture')->path()));
+            }
+
+            $product->product_code    = $code;
+            $product->product_picture = $image;
             $product->save();
+
+            // dd(123);
 
             if ($request->tag_code) {
                 foreach ($request->tag_code as $item => $value) {
@@ -150,6 +169,7 @@ class ProductController extends Controller
                 };
             }
 
+            // dd(123);
             if ($request->modifier_code) {
                 foreach ($request->modifier_code as $item) {
                     $karakter = "ABCDEVGHIJKLMNOPQRSTUVWXYZ";
@@ -175,43 +195,51 @@ class ProductController extends Controller
                     $string = str_shuffle($pin);
                     $product_attributeCode = "PA-" . $string;
                     $arrayProductAttributeCode[] = $product_attributeCode;
+                    $decode = json_decode($v);
 
                     ProductAttribute::create([
                         'product_attributeCode' => $product_attributeCode,
                         'product_code'          => $code,
-                        'attribute_code'        => $v,
+                        'attribute_code'        => $decode,
                     ]);
                 }
             }
 
             if ($request->detail_attribute) {
+
                 foreach ($request->detail_attribute as $key => $v) {
-                    for ($i = 0; $i < count($request->detail_attribute); $i++) {
+                    $decode = json_decode($v);
+                    // dd($key);
+                    foreach ($decode as $k1 => $v1) {
                         ProductAttributeDetail::create([
                             'product_attributeCode' => $arrayProductAttributeCode[$key],
-                            'detail_attribute'      => $v[$i],
+                            'detail_attribute'      => $v1,
                         ]);
                     }
                 }
             }
-
+            // dd(123);
             if ($request->options == 1) {
                 foreach ($request->variant_list as $item) {
                     $varKarakter = "ABCDEVGHIJKLMNOPQRSTUVWXYZ";
                     $varPin = mt_rand(0, 9999999) . $varKarakter[rand(0, strlen($varKarakter) - 1)];
                     $varString = str_shuffle($varPin);
                     $varCode = "PROD-" . $varString;
-                    $variantName = str_replace(",", " / ", $item['ValueCheck']);
+
+                    $decode = json_decode($item, true);
+
+                    $variantName = str_replace(",", " / ", $decode['ValueCheck']);
+                    // dd(123);
                     ProductVariant::create([
                         "variant_code" => $varCode,
                         "product_code" => $code,
-                        "variant_list" => $item['ValueCheck'],
+                        "variant_list" => $decode['ValueCheck'],
                         "variant_name" => $variantName,
-                        "product_buyPrice" => $item['product_buyPrice'],
-                        "product_barcode" => $item['product_barcode'],
-                        "product_price" => $item['product_price'],
-                        "reorder_quantity" => $item['reorder_quantity'],
-                        "product_taxRate" => $item['product_tax'],
+                        "product_buyPrice" => $decode['product_buyPrice'],
+                        "product_barcode" => $decode['product_barcode'],
+                        "product_price" => $decode['product_price'],
+                        "reorder_quantity" => $decode['reorder_quantity'],
+                        "product_taxRate" => $decode['product_tax'],
                     ]);
 
                     $karakter = "ABCDEVGHIJKLMNOPQRSTUVWXYZ";
@@ -224,10 +252,12 @@ class ProductController extends Controller
                     // $stock->shop_code = session('globalShop');
                     $stock->product_code = $code;
                     $stock->variant_code = $varCode;
-                    $stock->stock_quantity = $item['current_inventory'];
+                    $stock->stock_quantity = $decode['current_inventory'];
                     // $stock->Synchronized = 'No';
                     $stock->save();
                 }
+
+                // dd(890);
             } else {
 
                 $karakter = "ABCDEVGHIJKLMNOPQRSTUVWXYZ";
@@ -245,23 +275,19 @@ class ProductController extends Controller
                 $stock->save();
             };
 
-            $notification = array(
-                'message'    => 'Product data has been added!',
-                'alert-type' => 'success'
-            );
+            $response['success'] = true;
+            $response['message'] = " Success Add New Product! ";
         } catch (Exception $e) {
             DB::rollBack();
-            $notification = array(
-                'message'    => $e->getMessage(),
-                'alert-type' => 'error'
-            );
 
-            // return redirect()->back()->with($notification)->withInput();
+            $response['message'] = $e->getMessage();
+
+            return response()->json($response);
         }
+
         DB::commit();
-        // return redirect()
-        //     ->route($this->route . "index")
-        //     ->with($notification);
+
+        return response()->json($response);
     }
 
     /**

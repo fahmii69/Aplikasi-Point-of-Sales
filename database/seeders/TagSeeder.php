@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Product\Tag;
+use App\Models\Products\Tag;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;

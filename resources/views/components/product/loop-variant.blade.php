@@ -1,7 +1,7 @@
 <tbody class="tbodyHeader">
     <tr class="header">
         <td>`+value+` <input type="hidden" class="input-detailVariant" value="`+value+`"></td>
-        <td><input type="text" class="form-control input-detailVariant" name="product_barcode" onkeypress="return isNumberKey(event)"></td>
+        <td><input type="text" class="form-control input-detailVariant" name="product_barcode" onkeypress="return isNumberKey(event)" required></td>
         <td>
             <input type="text" class="form-control input-detailVariant" name="product_buyPrice" onkeypress="return isNumberKey(event)" value="`+hargaProduct_BuyPrice+`">
         </td>
@@ -17,7 +17,7 @@
             </div>
         </td>
         <td>
-            <button class="btn btn-danger btn-sm" type="button">
+            <button class="btn btn-danger btn-sm btn-tableVariant" type="button">
                 <i class="fas fa-trash-alt"></i>
             </button>
         </td>

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\View\Components;
+namespace App\View\Components\Product;
 
 use Illuminate\View\Component;
 
-class kolomOption0 extends Component
+class KolomOption0 extends Component
 {
     /**
      * Create a new component instance.

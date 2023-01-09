@@ -31,10 +31,7 @@ class StoreProductRequest extends FormRequest
             'supplier_code'   => 'required',
             'category_code'   => 'required',
             'options'         => 'required',
-            'model_code'      => 'nullable',
             'brand_code'      => 'nullable',
-            // 'levelAttribute'  => 'nullable',
-            // 'detailAttribute' => 'nullable',
             'product_picture' => 'nullable',
 
         ];

@@ -2,7 +2,6 @@
     isInput=false;
     
     $(document).ready(function(){
-        // $('.input-value').val('');
         $('.input-select').val('').trigger('change');
         //Fixing jQuery Click Events for the iPad
         var ua = navigator.userAgent,
@@ -47,8 +46,6 @@
     $('#tag_code').select2({
         tags: true,
         tokenSeparators: [','],
-        // selectOnClose: true,
-        // allowClear: true,
 
     });
 
@@ -57,16 +54,6 @@
         allowClear: true,
     });
         
-    // $(document).on('keyup','.select2-selection--multiple',function(){
-    //     $(this).closest('.form-group').find('.delete_attribute').addClass('d-none');
-    // });
-
-
-    
-    // function addAtrribute(){
-    //     banyakAttribute=$('#kolomAttribute').length;
-    // }
-    
     $(document).ready(function(){
         $('input[type=number]').val('0');
     });
@@ -124,18 +111,6 @@
     //     }
     // });
     
-    // $("select").on("select2:select", function (evt) {
-    //     var element = evt.params.data.element;
-    //     var $element = $(element);
-    //     $element.detach();
-    //     $(this).append($element);
-    //     $(this).trigger("change");
-    // });
-    
-    // $(document).on("keydown", ".input-value", function(event) { 
-    //     return event.key != "Enter";
-    // });
-    
     hargaProduct_BuyPrice=0;
     hargaProduct_Price=0;
     
@@ -149,20 +124,11 @@
     }
 
     $(document).on('click','.btn-submit', function(){
-        // var checkrequired = $('input,textarea,select').filter('[required]:visible')
-        // var isValid = true;
-        // $(checkrequired).each( function() {
-        //         if ($(this).parsley().validate() !== true) isValid = false;
-        // });
-
-        // if(!isValid){
-        // return;
-        // }
         
         var form            = $('#form');
             url             = "{{ $action }}";
             product_name    = $('#product_name').val();
-            product_picture = $('#product_picture');
+            product_picture = $('#product_picture').val();
             brand_code      = $('#brand_code').val();
             category_code   = $('#category_code').val();
             modifier_code   = $('#modifier_code').val();
@@ -205,64 +171,60 @@
                 "product_tax"      : listValue[6].value,
             });
         }); 
+        var formData = new FormData();
+
+        formData.append("product_name", product_name);
+        formData.append("brand_code", brand_code);
+        formData.append("category_code", category_code);
+        tag_code.forEach((item) => formData.append("tag_code[]", item))
+        modifier_code.forEach((item) => formData.append("modifier_code[]", item))
+        formData.append("options", options);
+        formData.append('product_picture', $('input[type=file]')[0].files[0]); 
+        formData.append("supplier_code", supplier_code);
+        formData.append("product_buyPrice", product_buyPrice);
+        formData.append("current_inventory", current_inventory);
+        formData.append("reorder_quantity", reorder_quantity);
+        formData.append("product_tax", product_tax);
+        formData.append("product_price", product_price);
+        levelattr.forEach((item) => formData.append("level_attribute[]", JSON.stringify(item)))
+        detailattr.forEach((item) => formData.append("detail_attribute[]", JSON.stringify(item)))
+        listVariant.forEach((item) => formData.append("variant_list[]", JSON.stringify(item)))
         
         $.ajax({
             url:url,
-            data:{
-                "product_name"     : product_name,
-                "brand_code"       : brand_code,
-                "category_code"    : category_code,
-                "tag_code"         : tag_code,
-                "modifier_code"    : modifier_code,
-                "options"          : options,
-                "supplier_code"    : supplier_code,
-                "product_buyPrice" : product_buyPrice,
-                "current_inventory": current_inventory,
-                "reorder_quantity" : reorder_quantity,
-                "product_tax"      : product_tax,
-                "product_price"    : product_price,
-                "level_attribute"  : levelattr,
-                "detail_attribute" : detailattr,
-                "variant_list"     : listVariant,
-            },
+            data:formData,
+            processData: false,
+            contentType: false,
             type:'post',
         }).done(function(data){
-            // suksesAddProduct();
+
+            Swal.fire(
+                'Success!',
+                data.message,
+                'success'
+            );
+
             // function done(){
             //     urlIndex="{{route('product.index')}}";
             //     window.location.href=urlIndex;
             // }
             // setTimeout(done,500);
         }).fail(function(data){
-            // gagalAddProduct();
+            // Swal.fire(
+            //     'Failed :(',
+            //     data.message,
+            //     'error'
+            // );
 
-            console.log(data)
+            // console.log(data)
         });
     });
-    
-    function gagalAddProduct(){
-        Swal.fire(
-        'Failed :(',
-        'Failed to Add New Product!',
-        'error'
-        )
-    }
-    
-    function suksesAddProduct(){
-        Swal.fire(
-        'Success!',
-        'Success Add New Product!',
-        'success'
-        )
-    }
-    
     
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-    
     
     //edit
     $(document).on('keyup','#product_buyPrice', function(){
