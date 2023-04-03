@@ -18,6 +18,7 @@ use App\Models\Products\ProductVariant;
 use App\Models\Stocks\Stock;
 use App\Models\Stocks\Supplier;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
@@ -372,11 +373,13 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  Product $product
+     * @return JsonResponse
      */
-    public function destroy($id)
+    public function destroy(Product $product): JsonResponse
     {
-        //
+        Product::destroy($product->id);
+
+        return response()->json(['success' => true, 'message' => 'Product Data has been DELETED !']);
     }
 }
